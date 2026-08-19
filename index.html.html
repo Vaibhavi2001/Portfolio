@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vaibhavi Sunil Sukale — Data & Analytics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF1EE;
+    --paper-alt:#E4E9E3;
+    --ink:#182420;
+    --ink-soft:#3F4E48;
+    --line:#C7D0C4;
+    --teal:#2F6F62;
+    --teal-deep:#1F4A41;
+    --gold:#C68A2E;
+    --card:#F6F8F5;
+    --mono: 'JetBrains Mono', monospace;
+    --slab: 'Zilla Slab', serif;
+    --sans: 'Inter', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.55;
+  }
+  a{color:inherit;}
+
+  /* subtle graph-paper texture */
+  .grid-bg{
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:36px 36px;
+    background-position:-1px -1px;
+    opacity:0.35;
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+  }
+
+  .layout{
+    position:relative;
+    z-index:1;
+    display:grid;
+    grid-template-columns:220px 1fr;
+    min-height:100vh;
+  }
+
+  /* SIDEBAR */
+  .sidebar{
+    position:sticky;
+    top:0;
+    height:100vh;
+    padding:32px 24px;
+    border-right:1px solid var(--line);
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+  }
+  .sb-top .mark{
+    font-family:var(--slab);
+    font-weight:700;
+    font-size:1.15rem;
+    letter-spacing:0.02em;
+  }
+  .sb-top .mark span{color:var(--teal);}
+  .sb-sub{
+    font-family:var(--mono);
+    font-size:0.68rem;
+    color:var(--ink-soft);
+    margin-top:4px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+  }
+  nav.filetree{margin-top:48px;}
+  nav.filetree .label{
+    font-family:var(--mono);
+    font-size:0.65rem;
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+    color:var(--ink-soft);
+    margin-bottom:10px;
+  }
+  nav.filetree ul{list-style:none;padding:0;margin:0;}
+  nav.filetree li{margin-bottom:2px;}
+  nav.filetree a{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-family:var(--mono);
+    font-size:0.82rem;
+    text-decoration:none;
+    color:var(--ink);
+    padding:6px 8px;
+    border-radius:4px;
+    border-left:2px solid transparent;
+    transition:background 0.15s ease, border-color 0.15s ease;
+  }
+  nav.filetree a:hover, nav.filetree a.active{
+    background:var(--card);
+    border-left:2px solid var(--teal);
+  }
+  nav.filetree a::before{content:"›";color:var(--teal);font-weight:700;}
+  .sb-bottom{font-family:var(--mono);font-size:0.72rem;}
+  .sb-bottom a{display:block;text-decoration:none;color:var(--ink-soft);margin-bottom:8px;}
+  .sb-bottom a:hover{color:var(--teal-deep);}
+  .sb-toggle{display:none;}
+
+  /* MAIN */
+  main{padding:0 0 80px;}
+  section{padding:64px 64px 8px;max-width:920px;}
+  .section-head{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    margin-bottom:28px;
+    border-bottom:1px solid var(--line);
+    padding-bottom:12px;
+  }
+  .section-head .tag{
+    font-family:var(--mono);
+    font-size:0.7rem;
+    color:var(--teal-deep);
+    background:var(--card);
+    border:1px solid var(--line);
+    padding:2px 8px;
+    border-radius:3px;
+  }
+  .section-head h2{
+    font-family:var(--slab);
+    font-weight:600;
+    font-size:1.6rem;
+    margin:0;
+  }
+
+  /* HERO */
+  .hero{padding:72px 64px 0;max-width:1040px;}
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:0.78rem;
+    color:var(--teal-deep);
+    letter-spacing:0.05em;
+    margin-bottom:14px;
+  }
+  h1{
+    font-family:var(--slab);
+    font-weight:700;
+    font-size:clamp(2.2rem, 5vw, 3.4rem);
+    line-height:1.08;
+    margin:0 0 18px;
+    max-width:12ch;
+  }
+  .hero p.lede{
+    font-size:1.08rem;
+    color:var(--ink-soft);
+    max-width:56ch;
+    margin:0 0 32px;
+  }
+  .cta-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:44px;}
+  .btn{
+    font-family:var(--mono);
+    font-size:0.82rem;
+    text-decoration:none;
+    padding:11px 18px;
+    border-radius:4px;
+    border:1px solid var(--ink);
+    color:var(--ink);
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    transition:transform 0.15s ease, background 0.15s ease;
+  }
+  .btn.primary{background:var(--teal-deep);border-color:var(--teal-deep);color:#F5F8F5;}
+  .btn:hover{transform:translateY(-2px);}
+
+  /* TICKER — signature element */
+  .ticker-wrap{
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    background:var(--paper-alt);
+    overflow:hidden;
+    padding:18px 0;
+    margin-bottom:0;
+  }
+  .ticker-track{
+    display:flex;
+    width:max-content;
+    animation:scroll 34s linear infinite;
+    gap:56px;
+  }
+  @keyframes scroll{
+    from{transform:translateX(0);}
+    to{transform:translateX(-50%);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .ticker-track{animation:none;flex-wrap:wrap;}
+  }
+  .stat{
+    font-family:var(--mono);
+    white-space:nowrap;
+    display:flex;
+    align-items:baseline;
+    gap:8px;
+    padding:0 24px 0 0;
+  }
+  .stat .num{font-size:1.3rem;font-weight:700;color:var(--teal-deep);}
+  .stat .num.gold{color:var(--gold);}
+  .stat .lbl{font-size:0.72rem;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.04em;}
+
+  /* ABOUT */
+  .about-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:40px;}
+  .about-grid p{color:var(--ink-soft);margin:0 0 14px;}
+  .info-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:20px 22px;
+    font-family:var(--mono);
+    font-size:0.82rem;
+  }
+  .info-card div{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed var(--line);}
+  .info-card div:last-child{border-bottom:none;}
+  .info-card span.k{color:var(--ink-soft);}
+
+  /* EXPERIENCE */
+  .job{margin-bottom:36px;}
+  .job-head{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:4px;}
+  .job-head h3{font-family:var(--slab);font-size:1.15rem;margin:0;}
+  .job-head .period{font-family:var(--mono);font-size:0.78rem;color:var(--ink-soft);}
+  .job .company{font-style:italic;color:var(--teal-deep);margin-bottom:10px;font-size:0.94rem;}
+  .job ul{margin:0;padding-left:20px;color:var(--ink-soft);}
+  .job li{margin-bottom:6px;}
+
+  /* PROJECTS */
+  .proj-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-bottom:24px;}
+  .proj-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:24px;
+    display:flex;
+    flex-direction:column;
+  }
+  .proj-card .stack{font-family:var(--mono);font-size:0.68rem;color:var(--teal-deep);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;}
+  .proj-card h3{font-family:var(--slab);font-size:1.15rem;margin:0 0 10px;}
+  .proj-card ul{margin:0 0 16px;padding-left:18px;color:var(--ink-soft);font-size:0.92rem;flex-grow:1;}
+  .proj-card li{margin-bottom:6px;}
+  .proj-links{display:flex;gap:14px;margin-top:auto;}
+  .proj-links a{
+    font-family:var(--mono);
+    font-size:0.78rem;
+    text-decoration:none;
+    color:var(--teal-deep);
+    border-bottom:1px solid var(--teal-deep);
+    padding-bottom:1px;
+  }
+  .proj-links a:hover{color:var(--gold);border-color:var(--gold);}
+  .proj-card.placeholder{border-style:dashed;}
+  .proj-card.placeholder .note{font-size:0.78rem;color:var(--ink-soft);font-style:italic;}
+
+  /* CERTIFICATIONS */
+  .cert-list{border-top:1px solid var(--line);}
+  .cert-row{
+    display:grid;
+    grid-template-columns:1fr auto auto;
+    align-items:center;
+    gap:18px;
+    padding:16px 4px;
+    border-bottom:1px solid var(--line);
+  }
+  .cert-row .name{font-family:var(--slab);font-size:1.02rem;}
+  .cert-row .issuer{font-family:var(--mono);font-size:0.76rem;color:var(--ink-soft);display:block;margin-top:2px;}
+  .cert-row .date{font-family:var(--mono);font-size:0.76rem;color:var(--ink-soft);white-space:nowrap;}
+  .cert-row a.verify{
+    font-family:var(--mono);
+    font-size:0.78rem;
+    text-decoration:none;
+    color:var(--teal-deep);
+    border-bottom:1px solid var(--teal-deep);
+    white-space:nowrap;
+  }
+  .cert-row a.verify:hover{color:var(--gold);border-color:var(--gold);}
+  @media (max-width:880px){
+    .cert-row{grid-template-columns:1fr;gap:6px;}
+  }
+
+  /* SKILLS */
+  .skill-groups{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-bottom:16px;}
+  .skill-group h4{
+    font-family:var(--mono);
+    font-size:0.72rem;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:var(--teal-deep);
+    margin:0 0 10px;
+  }
+  .tags{display:flex;flex-wrap:wrap;gap:8px;}
+  .tag{
+    font-family:var(--mono);
+    font-size:0.78rem;
+    background:var(--card);
+    border:1px solid var(--line);
+    padding:5px 10px;
+    border-radius:4px;
+  }
+
+  /* CONTACT / FOOTER */
+  .contact-box{
+    background:var(--teal-deep);
+    color:#F2F6F3;
+    border-radius:10px;
+    padding:48px;
+    text-align:left;
+    margin:16px 0 48px;
+  }
+  .contact-box h2{font-family:var(--slab);font-size:1.8rem;margin:0 0 12px;}
+  .contact-box p{color:#CFE0D8;max-width:50ch;margin:0 0 26px;}
+  .contact-box .btn{border-color:#F2F6F3;color:#F2F6F3;}
+  .contact-box .btn.primary{background:var(--gold);border-color:var(--gold);color:#1B1404;}
+  footer{
+    font-family:var(--mono);
+    font-size:0.72rem;
+    color:var(--ink-soft);
+    padding:0 64px 40px;
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width:880px){
+    .layout{grid-template-columns:1fr;}
+    .sidebar{
+      position:relative;
+      height:auto;
+      flex-direction:row;
+      align-items:center;
+      justify-content:space-between;
+      padding:18px 20px;
+      border-right:none;
+      border-bottom:1px solid var(--line);
+    }
+    nav.filetree{margin-top:0;position:fixed;top:64px;left:0;right:0;background:var(--paper);border-bottom:1px solid var(--line);padding:14px 20px;display:none;z-index:5;}
+    nav.filetree.open{display:block;}
+    .sb-bottom{display:none;}
+    .sb-toggle{
+      display:inline-block;
+      font-family:var(--mono);
+      font-size:0.75rem;
+      background:none;
+      border:1px solid var(--ink);
+      border-radius:4px;
+      padding:6px 10px;
+      cursor:pointer;
+      color:var(--ink);
+    }
+    section, .hero{padding-left:24px;padding-right:24px;}
+    .about-grid, .proj-grid, .skill-groups{grid-template-columns:1fr;}
+    footer{padding-left:24px;padding-right:24px;}
+    h1{max-width:none;}
+  }
+</style>
+</head>
+<body>
+<div class="grid-bg" aria-hidden="true"></div>
+<div class="layout">
+
+  <aside class="sidebar">
+    <div class="sb-top">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div class="mark">vaibhavi<span>.sukale</span></div>
+          <div class="sb-sub">data & analytics</div>
+        </div>
+        <button class="sb-toggle" onclick="document.querySelector('nav.filetree').classList.toggle('open')" aria-label="Toggle navigation">menu</button>
+      </div>
+      <nav class="filetree" aria-label="Section navigation">
+        <div class="label">Contents</div>
+        <ul>
+          <li><a href="#about">about.md</a></li>
+          <li><a href="#experience">experience.log</a></li>
+          <li><a href="#projects">projects/</a></li>
+          <li><a href="#skills">skills.json</a></li>
+          <li><a href="#certifications">certs.yaml</a></li>
+          <li><a href="#contact">contact.txt</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="sb-bottom">
+      <a href="https://www.linkedin.com/in/vaibhavi-sunil-sukale" target="_blank" rel="noopener">linkedin ↗</a>
+      <a href="https://github.com/Vaibhavi2001" target="_blank" rel="noopener">github ↗</a>
+      <a href="mailto:vaibhavisukale@gmail.com">email ↗</a>
+    </div>
+  </aside>
+
+  <main>
+    <section class="hero" id="top">
+      <div class="eyebrow">// Boston, MA</div>
+      <h1>I turn messy data into decisions people can act on.</h1>
+      <p class="lede">Analytics graduate student at Northeastern University, skilled in Python, SQL, Power BI, and Tableau. I've spent the last two years building predictive models and dashboards across healthcare, real estate, government, and finance datasets.</p>
+      <div class="cta-row">
+        <a class="btn primary" href="#projects">View projects</a>
+        <a class="btn" href="#contact">Get in touch</a>
+        <a class="btn" href="https://github.com/Vaibhavi2001" target="_blank" rel="noopener">GitHub ↗</a>
+      </div>
+    </section>
+
+    <div class="ticker-wrap" aria-label="Career highlights">
+      <div class="ticker-track" id="tickerTrack"></div>
+    </div>
+
+    <section id="about" style="padding-top:56px;">
+      <div class="section-head"><span class="tag">01</span><h2>About</h2></div>
+      <div class="about-grid">
+        <div>
+          <p>I'm an analytics graduate student at Northeastern University (MPS in Analytics, expected June 2026), with a Bachelor of Engineering in Computer Engineering from Dr. D. Y. Patil Institute of Technology, India.</p>
+          <p>My work spans statistical testing, regression and tree-based modeling, and dashboard development — most recently applied to a $1.6B+ healthcare payments dataset, a 24GB municipal service-request dataset, and residential real estate pricing in the Boston market.</p>
+          <p>I like problems where the data is messy, the stakeholders are non-technical, and the answer has to hold up to scrutiny.</p>
+        </div>
+        <div class="info-card">
+          <div><span class="k">Location</span><span>Boston, MA</span></div>
+          <div><span class="k">Focus</span><span>Analytics / Data Science</span></div>
+          <div><span class="k">Tools</span><span>Python, SQL, Power BI</span></div>
+          <div><span class="k">Education</span><span>MPS Analytics '26</span></div>
+          <div><span class="k">Email</span><span><a href="mailto:vaibhavisukale@gmail.com">vaibhavisukale@gmail.com</a></span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="experience">
+      <div class="section-head"><span class="tag">02</span><h2>Experience</h2></div>
+
+      <div class="job">
+        <div class="job-head"><h3>Data Analyst</h3><span class="period">Jul 2023 – Jun 2024</span></div>
+        <div class="company">S. N. Sukale &amp; Company, Pune, India</div>
+        <ul>
+          <li>Built Tableau and Excel dashboards tracking tax return status, audit progress, client workload, and operational KPIs, giving leadership real-time visibility.</li>
+          <li>Cleaned, validated, and transformed financial and client datasets using Excel, SQL, and Python, strengthening the accuracy and reliability of firm-wide reporting.</li>
+          <li>Automated recurring reporting workflows using Excel, Power Query, Pivot Tables, SQL, and Python, cutting manual report preparation time.</li>
+          <li>Designed KPI reports tracking filing completion, pending audits, turnaround time, and operational trends to support faster, data-driven decisions.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="job-head"><h3>Qualitative Data Analyst Intern</h3><span class="period">Sep 2025 – Dec 2025</span></div>
+        <div class="company">Feminine Intelligence Agency, Remote</div>
+        <ul>
+          <li>Curated and validated 180+ anonymized behavioral scenarios, ensuring full compliance with data quality and privacy standards.</li>
+          <li>Partnered with cross-functional teams to streamline dataset preparation, categorization, and reporting workflows.</li>
+          <li>Standardized qualitative datasets to be ML-ready, supporting future predictive modeling initiatives.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="projects">
+      <div class="section-head"><span class="tag">03</span><h2>Projects</h2></div>
+      <div class="proj-grid">
+
+        <div class="proj-card">
+          <div class="stack">Python · Power BI · Scikit-learn</div>
+          <h3>NYC 311 Service Request Analytics</h3>
+          <ul>
+            <li>Built a Python preprocessing and feature-engineering pipeline to analyze millions of NYC 311 requests from a 24GB dataset.</li>
+            <li>Delivered interactive Power BI dashboards and predictive models (Linear Regression, Random Forest) across 50,000 service requests.</li>
+            <li>Achieved 93% classification accuracy and a 0.70 ROC-AUC in predicting delayed service requests.</li>
+          </ul>
+          <div class="proj-links">
+            <a href="https://github.com/Vaibhavi2001/nyc-311-service-request-analytics" target="_blank" rel="noopener">View code ↗</a>
+          </div>
+        </div>
+
+        <div class="proj-card">
+          <div class="stack">Python · XGBoost · Pandas</div>
+          <h3>Boston Seller Launch Optimizer</h3>
+          <ul>
+            <li>Analyzed 24,374 residential property transactions and engineered 37 predictive features from assessment, sales, and market datasets.</li>
+            <li>Developed and compared Linear Regression, Random Forest, and XGBoost models; XGBoost achieved R² = 0.964 and MAPE = 6.75%.</li>
+            <li>Pinpointed optimal listing timing: June listings earned a 2.8% price premium and sold 10 days faster than February listings.</li>
+          </ul>
+          <div class="proj-links">
+            <a href="https://github.com/Vaibhavi2001/boston-home-selling-optimizer" target="_blank" rel="noopener">View code ↗</a>
+          </div>
+        </div>
+
+        <div class="proj-card">
+          <div class="stack">Python · Scikit-learn · Matplotlib</div>
+          <h3>Healthcare Analytics Capstone</h3>
+          <ul>
+            <li>Investigated $1.6B+ in physician-industry payments across 6.2M+ CMS records using Mann-Whitney U, Welch's t-test, and Chi-square analyses.</li>
+            <li>Developed and benchmarked OLS, Ridge Regression, and Random Forest models; Random Forest achieved R² = 0.87 and MAE = 0.50.</li>
+            <li>Isolated specialty and payment structure as far stronger drivers of payment variation than gender, narrowing the adjusted gender effect to ~3.8%.</li>
+          </ul>
+          <div class="proj-links">
+            <a href="https://github.com/Vaibhavi2001" target="_blank" rel="noopener">GitHub profile ↗</a>
+          </div>
+        </div>
+
+        <div class="proj-card">
+          <div class="stack">Python · Scikit-learn · Pandas</div>
+          <h3>US Census Income Prediction</h3>
+          <ul>
+            <li>Analyzed ~33,000 ACS PUMS records across 290 variables, engineering a 9-feature subset spanning demographic, education, and employment characteristics to predict personal income.</li>
+            <li>Built and compared Linear Regression, Random Forest, and Gradient Boosting models; Gradient Boosting performed best with R² = 0.344 and MAE = 24,116, cutting error by ~11% versus the linear baseline.</li>
+            <li>Found employment status and hours worked to be the strongest income predictors, with non-linear ensemble methods consistently outperforming linear regression.</li>
+          </ul>
+          <div class="proj-links">
+            <a href="https://github.com/Vaibhavi2001/us-census-income-prediction" target="_blank" rel="noopener">View code ↗</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="skills">
+      <div class="section-head"><span class="tag">04</span><h2>Skills</h2></div>
+      <div class="skill-groups">
+        <div class="skill-group">
+          <h4>Programming &amp; Analysis</h4>
+          <div class="tags">
+            <span class="tag">Python (Pandas, NumPy, scikit-learn)</span>
+            <span class="tag">SQL</span>
+            <span class="tag">R</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <h4>Data Visualization</h4>
+          <div class="tags">
+            <span class="tag">Tableau</span>
+            <span class="tag">Power BI</span>
+            <span class="tag">Matplotlib</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <h4>Databases &amp; Cloud</h4>
+          <div class="tags">
+            <span class="tag">MySQL Workbench</span>
+            <span class="tag">Databricks</span>
+            <span class="tag">PySpark</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <h4>Techniques</h4>
+          <div class="tags">
+            <span class="tag">EDA</span>
+            <span class="tag">Customer Segmentation</span>
+            <span class="tag">Predictive Modeling</span>
+            <span class="tag">Dashboard Development</span>
+            <span class="tag">Data Cleaning</span>
+            <span class="tag">Statistical Analysis</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="certifications">
+      <div class="section-head"><span class="tag">05</span><h2>Certifications</h2></div>
+      <div class="cert-list">
+        <div class="cert-row">
+          <span class="date">Jul 2026</span>
+          <a class="verify" href="https://www.theforage.com/completion-certificates/9PBTqmSxAf6zZTseP/io9DzWKe3PTsiS6GG_9PBTqmSxAf6zZTseP_695c6549c380f64bfff4b4c9_1784778564664_completion_certificate.pdf" target="_blank" rel="noopener">View certificate ↗</a>
+        </div>
+        <div class="cert-row">
+          <div><span class="name">Architecting with Google Compute Engine</span><span class="issuer">Coursera Specialization</span></div>
+          <span class="date">Oct 2021</span>
+          <a class="verify" href="https://www.coursera.org/account/accomplishments/specialization/TDWDXUFJFRWT" target="_blank" rel="noopener">View certificate ↗</a>
+        </div>
+        <div class="cert-row">
+          <div><span class="name">Data Visualization and Storytelling Basics</span><span class="issuer">Northeastern University · Digital Badge</span></div>
+          <span class="date">May 2025</span>
+          <a class="verify" href="https://badges.parchment.com/public/assertions/oMKqVLF5TxqeiP93YgnWUw" target="_blank" rel="noopener">View badge ↗</a>
+        </div>
+        <div class="cert-row">
+          <div><span class="name">Introduction to Analytics</span><span class="issuer">Northeastern University · Digital Badge</span></div>
+          <span class="date">Mar 2025</span>
+          <a class="verify" href="https://badges.parchment.com/public/assertions/6F0Nff7oQt2ps1kNCmqLAw" target="_blank" rel="noopener">View badge ↗</a>
+        </div>
+        <div class="cert-row">
+          <div><span class="name">Graduate Leadership Institute</span><span class="issuer">Northeastern University · Digital Badge</span></div>
+          <span class="date">Apr 2026</span>
+          <a class="verify" href="https://northeastern.badges.parchment.com/public/credentials/AtVR5fNFSbmpcTdJ7b2K5Q" target="_blank" rel="noopener">View badge ↗</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="contact-box">
+        <h2>Let's talk data.</h2>
+        <p>Open to Data Analyst, BI Analyst, Business Analyst, ML Engineer, and Data Engineer roles starting mid-2026. The fastest way to reach me is email — I'll usually reply within a day.</p>
+        <div class="cta-row" style="margin-bottom:0;">
+          <a class="btn primary" href="mailto:vaibhavisukale@gmail.com">Email me</a>
+          <a class="btn" href="https://www.linkedin.com/in/vaibhavi-sunil-sukale" target="_blank" rel="noopener">LinkedIn ↗</a>
+          <a class="btn" href="https://github.com/Vaibhavi2001" target="_blank" rel="noopener">GitHub ↗</a>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <span>© 2026 Vaibhavi Sunil Sukale</span>
+      <span>Boston, MA</span>
+    </footer>
+  </main>
+</div>
+
+<script>
+  // Build ticker from real, resume-sourced metrics — duplicated once for seamless loop
+  const stats = [
+    ["$1.6B+", "payments analyzed"],
+    ["6.2M+", "CMS records"],
+    ["R² 0.964", "XGBoost pricing model"],
+    ["93%", "classification accuracy"],
+    ["24,374", "property transactions"],
+    ["180+", "behavioral scenarios curated"],
+    ["24GB", "NYC 311 dataset processed"],
+    ["2.8%", "seasonal price premium found"],
+    ["33K+", "census records modeled"],
+  ];
+  const track = document.getElementById('tickerTrack');
+  function renderStats(){
+    let html = "";
+    for (let i=0;i<2;i++){
+      stats.forEach(([num,lbl])=>{
+        html += `<div class="stat"><span class="num">${num}</span><span class="lbl">${lbl}</span></div>`;
+      });
+    }
+    track.innerHTML = html;
+  }
+  renderStats();
+
+  // active nav highlight
+  const links = document.querySelectorAll('nav.filetree a');
+  const sections = [...links].map(a => document.querySelector(a.getAttribute('href')));
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        links.forEach(l=>l.classList.remove('active'));
+        const match = document.querySelector(`nav.filetree a[href="#${entry.target.id}"]`);
+        if(match) match.classList.add('active');
+      }
+    });
+  }, {rootMargin:"-40% 0px -50% 0px"});
+  sections.forEach(s=>{ if(s) obs.observe(s); });
+
+  // close mobile menu after nav click
+  links.forEach(l=>l.addEventListener('click', ()=>{
+    document.querySelector('nav.filetree').classList.remove('open');
+  }));
+</script>
+</body>
+</html>
